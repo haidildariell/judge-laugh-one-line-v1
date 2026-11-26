@@ -15,11 +15,27 @@ LINE = (
 OUTPUT_PATH = "/output/entry.txt"
 
 
+def validate_line(text: str) -> str:
+    """One-liners must be a single line of 1-200 characters."""
+    if not 1 <= len(text) <= 200:
+        raise ValueError(f"line must be 1-200 characters, got {len(text)}")
+    if "\n" in text:
+        raise ValueError("line must not contain a newline")
+    return text
+
+
+def write_entry(path: str, text: str) -> int:
+    """Write the validated line to path, return characters written."""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text + "\n")
+    return len(text)
+
+
 def main() -> None:
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-        f.write(LINE + "\n")
-    print(f"Wrote {len(LINE)} characters to {OUTPUT_PATH}")
+    line = validate_line(LINE)
+    count = write_entry(OUTPUT_PATH, line)
+    print(f"Wrote {count} characters to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":
